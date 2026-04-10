@@ -3,8 +3,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { User, Mail, Lock, AlertCircle, UserPlus } from 'lucide-react';
-import { auth } from '../../config/firebase';
+import { auth, db } from '../../config/firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import {
   Container,
   FormCard,
@@ -52,7 +53,18 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ onNavigateLogin,
   const onSubmit = async (data: RegisterFormInputs) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      await updateProfile(userCredential.user, { displayName: data.name });
+      const user = userCredential.user;
+      
+      // Update Auth Profile
+      await updateProfile(user, { displayName: data.name });
+
+      // Save user details to Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        name: data.name,
+        email: data.email,
+        createdAt: new Date().toISOString()
+      });
+
       onSuccess();
     } catch (error: any) {
       console.error('Erro no cadastro:', error);
