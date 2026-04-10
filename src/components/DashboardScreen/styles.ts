@@ -1,165 +1,119 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-export const Container = styled.div`
+export const DashboardWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   width: 100%;
-  max-width: 1000px;
-  padding: 2rem;
-  margin: 0 auto;
 `;
 
-export const TopBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-`;
+export const SummaryRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 
-export const Title = styled.h1`
-  font-size: 2rem;
-  font-weight: 700;
-  color: #ffffff;
-`;
-
-export const LogoutButton = styled.button`
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 12px;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(239, 68, 68, 0.2);
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-export const DashboardCard = styled(motion.div)`
+export const StatCard = styled(motion.div)<{ $variant: 'income' | 'expense' | 'balance' }>`
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid ${({ $variant }) =>
+    $variant === 'income'
+      ? 'rgba(16,185,129,0.3)'
+      : $variant === 'expense'
+      ? 'rgba(239,68,68,0.3)'
+      : 'rgba(129,140,248,0.3)'};
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+`;
+
+export const StatIcon = styled.div<{ $variant: 'income' | 'expense' | 'balance' }>`
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: ${({ $variant }) =>
+    $variant === 'income'
+      ? 'rgba(16,185,129,0.15)'
+      : $variant === 'expense'
+      ? 'rgba(239,68,68,0.15)'
+      : 'rgba(129,140,248,0.15)'};
+  color: ${({ $variant }) =>
+    $variant === 'income' ? '#34d399' : $variant === 'expense' ? '#f87171' : '#818cf8'};
+`;
+
+export const StatLabel = styled.p`
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0 0 0.35rem;
+`;
+
+export const StatValue = styled.p`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+`;
+
+export const ChartsRow = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const ChartCard = styled(motion.div)`
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  padding: 1.75rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 `;
 
-export const FilterSection = styled.div`
+export const ChartTitle = styled.h3`
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 1.25rem;
+`;
+
+export const LoadingState = styled.div`
+  text-align: center;
+  padding: 4rem 1rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.95rem;
+  animation: pulse 1.5s ease-in-out infinite;
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.9; }
+  }
+`;
+
+export const EmptyState = styled.div`
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.9rem;
+  line-height: 1.6;
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-`;
-
-export const SearchInput = styled.input`
-  flex: 1;
-  min-width: 200px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  color: #ffffff;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-  outline: none;
-
-  &:focus {
-    border-color: #818cf8;
-    background: rgba(0, 0, 0, 0.3);
-  }
-
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
-  }
-`;
-
-export const SelectFilter = styled.select`
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  color: #ffffff;
-  font-size: 0.95rem;
-  outline: none;
-  cursor: pointer;
-
-  &:focus {
-    border-color: #818cf8;
-  }
-  
-  option {
-    background: #1e1b4b; /* Dark background to match aesthetic */
-    color: white;
-  }
-`;
-
-export const TableContainer = styled.div`
-  width: 100%;
-  overflow-x: auto;
-`;
-
-export const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-`;
-
-export const TableHead = styled.thead`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-`;
-
-export const TableHeader = styled.th`
-  padding: 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-`;
-
-export const TableRow = styled(motion.tr)`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.02);
-  }
-`;
-
-export const TableCell = styled.td`
-  padding: 1rem;
-  font-size: 0.95rem;
-  color: #ffffff;
-`;
-
-export const StatusBadge = styled.span<{ $status: 'Concluído' | 'Pendente' | 'Falho' }>`
-  background: ${({ $status }) => {
-    switch ($status) {
-      case 'Concluído': return 'rgba(16, 185, 129, 0.2)';
-      case 'Pendente': return 'rgba(245, 158, 11, 0.2)';
-      case 'Falho': return 'rgba(239, 68, 68, 0.2)';
-      default: return 'rgba(255, 255, 255, 0.1)';
-    }
-  }};
-  color: ${({ $status }) => {
-    switch ($status) {
-      case 'Concluído': return '#34d399';
-      case 'Pendente': return '#fbbf24';
-      case 'Falho': return '#f87171';
-      default: return '#ffffff';
-    }
-  }};
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  align-items: center;
+  justify-content: center;
 `;
