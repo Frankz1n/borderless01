@@ -4,13 +4,13 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCEJSJECL5VdDb5oeTQ6ImAjwIEKA7WUE8",
-  authDomain: "borderlessdb.firebaseapp.com",
-  projectId: "borderlessdb",
-  storageBucket: "borderlessdb.firebasestorage.app",
-  messagingSenderId: "691704357635",
-  appId: "1:691704357635:web:0492cf85457cf153b43f36",
-  measurementId: "G-Q5ZBYC9T4Q"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
