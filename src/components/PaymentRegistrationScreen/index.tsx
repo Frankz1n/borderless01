@@ -24,11 +24,9 @@ import {
   SubmitButton
 } from './styles';
 
+// All fields kept as strings — convert amount to number manually in onSubmit
 const paymentSchema = z.object({
-  amount: z.string()
-    .min(1, 'O valor é obrigatório')
-    .transform((val) => Number(val.replace(',', '.')))
-    .refine((val) => !isNaN(val) && val > 0, { message: 'Por favor, insira um valor válido maior que zero.' }),
+  amount: z.string().min(1, 'O valor é obrigatório'),
   description: z.string().optional(),
   category: z.string().optional(),
   paymentDate: z.string().min(1, 'A data de pagamento é obrigatória'),
@@ -45,7 +43,7 @@ export const PaymentRegistrationScreen: React.FC = () => {
   } = useForm<PaymentFormInputs>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
-      amount: '' as any,
+      amount: '',
       description: '',
       category: '',
       paymentDate: ''
@@ -59,10 +57,16 @@ export const PaymentRegistrationScreen: React.FC = () => {
         return;
       }
 
+      const amount = Number(data.amount.replace(',', '.'));
+      if (isNaN(amount) || amount <= 0) {
+        alert('Por favor, insira um valor válido maior que zero.');
+        return;
+      }
+
       await addDoc(collection(db, 'transactions'), {
         userId: auth.currentUser.uid,
         type: 'payment',
-        amount: data.amount,
+        amount,
         description: data.description || '',
         category: data.category || '',
         paymentDate: data.paymentDate,

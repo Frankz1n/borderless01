@@ -224,7 +224,7 @@ export const DashboardScreen: React.FC = () => {
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(v: number) => fmt(v)}
+                    formatter={(v) => fmt(Number(v))}
                     contentStyle={{
                       background: 'rgba(15,23,42,0.95)',
                       border: '1px solid rgba(255,255,255,0.1)',

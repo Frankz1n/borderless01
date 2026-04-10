@@ -17,13 +17,18 @@ import {
   SubmitButton
 } from './styles';
 
+// Keep all fields as strings for react-hook-form compatibility
 const accountSchema = z.object({
   name: z.string().min(2, 'O nome da instituição deve ter pelo menos 2 caracteres'),
   type: z.string().min(1, 'Selecione um tipo de conta válido'),
-  balance: z.string().transform((val) => Number(val.replace(',', '.'))).refine((val) => !isNaN(val), { message: 'Valor inválido' }),
+  balance: z.string(),
 });
 
-type AccountFormInputs = z.infer<typeof accountSchema>;
+type AccountFormInputs = {
+  name: string;
+  type: string;
+  balance: string;
+};
 
 export const AccountRegistrationScreen: React.FC = () => {
   const {
@@ -35,7 +40,7 @@ export const AccountRegistrationScreen: React.FC = () => {
     resolver: zodResolver(accountSchema),
     defaultValues: {
       type: '',
-      balance: 0 as any
+      balance: '0'
     }
   });
 
@@ -46,11 +51,14 @@ export const AccountRegistrationScreen: React.FC = () => {
         return;
       }
 
+      // Convert to number manually after validation
+      const balance = Number(data.balance.replace(',', '.')) || 0;
+
       await addDoc(collection(db, 'accounts'), {
         userId: auth.currentUser.uid,
         name: data.name,
         type: data.type,
-        balance: data.balance,
+        balance,
         createdAt: new Date().toISOString()
       });
 

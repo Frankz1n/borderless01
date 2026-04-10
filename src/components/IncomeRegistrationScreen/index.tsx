@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { 
-  ArrowDownToLine, /* Income specific icon */
+  ArrowDownToLine,
   AlertCircle, 
   DollarSign, 
   AlignLeft, 
@@ -24,11 +24,9 @@ import {
   SubmitButton
 } from './styles';
 
+// All fields kept as strings — convert amount to number manually in onSubmit
 const incomeSchema = z.object({
-  amount: z.string()
-    .min(1, 'O valor é obrigatório')
-    .transform((val) => Number(val.replace(',', '.')))
-    .refine((val) => !isNaN(val) && val > 0, { message: 'Por favor, insira um valor válido maior que zero.' }),
+  amount: z.string().min(1, 'O valor é obrigatório'),
   description: z.string().optional(),
   category: z.string().optional(),
   transactionDate: z.string().min(1, 'A data da entrada é obrigatória'),
@@ -45,7 +43,7 @@ export const IncomeRegistrationScreen: React.FC = () => {
   } = useForm<IncomeFormInputs>({
     resolver: zodResolver(incomeSchema),
     defaultValues: {
-      amount: '' as any,
+      amount: '',
       description: '',
       category: '',
       transactionDate: ''
@@ -59,10 +57,16 @@ export const IncomeRegistrationScreen: React.FC = () => {
         return;
       }
 
+      const amount = Number(data.amount.replace(',', '.'));
+      if (isNaN(amount) || amount <= 0) {
+        alert('Por favor, insira um valor válido maior que zero.');
+        return;
+      }
+
       await addDoc(collection(db, 'transactions'), {
         userId: auth.currentUser.uid,
         type: 'entrance',
-        amount: data.amount,
+        amount,
         description: data.description || '',
         category: data.category || '',
         transactionDate: data.transactionDate,
